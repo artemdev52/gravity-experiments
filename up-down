@@ -14,7 +14,7 @@
       background-color: #0aff0a;
     }
     #border {
-      border: 1px;
+      border: 1px solid red;
       position: absolute;
       top: 50%;
       transform: translateY(-1px);
@@ -27,20 +27,21 @@
   <div id='ball'></div>
   <div id='border'></div>
   <script>
-    let g = 1
+    let g = 0.3
     let gravity = g
     let border = window.innerHeight/2
-    let y = 50
+    let y = 0
     let vy = 0
     function start() {
       vy+=gravity;
       y += vy;
       ball.style.transform = 'translateY('+y+'px)';
-      if (y > border) {
+      if (y > border && gravity > 0) {
         gravity = -g;
-      } else if (y < border) {
+      } else if (y < border && gravity < 0) {
         gravity = g;
       }
+      requestAnimationFrame(start);
     }
     start()
   </script>
