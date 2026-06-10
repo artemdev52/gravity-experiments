@@ -1,1 +1,48 @@
-
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Experiment №1</title>
+  <style>
+    #ball {
+      position: absolute;
+      left: 50%;
+      top: 50px;
+      width: 48px;
+      height: 48px;
+      border: 2px solid green;
+      border-radius: 25px;
+      background-color: #0aff0a;
+    }
+    #border {
+      border: 1px;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-1px);
+      left: 0px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div id='ball'></div>
+  <div id='border'></div>
+  <script>
+    let g = 1
+    let gravity = g
+    let border = window.innerHeight/2
+    let y = 50
+    let vy = 0
+    function start() {
+      vy+=gravity;
+      y += vy;
+      ball.style.transform = 'translateY('+y+'px)';
+      if (y > border) {
+        gravity = -g;
+      } else if (y < border) {
+        gravity = g;
+      }
+    }
+    start()
+  </script>
+</body>
+</html>
