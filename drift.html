@@ -1,70 +1,120 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Experiment №2</title>
-  <style>
-    #h1 {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-    }
-    #move {
-      position: absolute;
-      top: 0px;
-      left: 0px;
-      background-color: blue;
-      border: 2px solid #000099;
-      width: 48px;
-      height: 48px;
-    }
-  </style>
+<title>Experiment №2</title>
+<style>
+#h1 {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+#move {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  background-color: blue;
+  border: 2px solid #000099;
+  width: 48px;
+  height: 48px;
+}
+#toggle {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+}
+#toggleBack {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  height: 10px;
+  width: 45px;
+  background-color: white;
+  border: 2px solid #999999;
+  border-radius: 7px;
+}
+#toggleFront {
+  position: absolute;
+  bottom: 7px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #0000ff;
+  border-radius: 50%;
+  background-color: #0066ff;
+}
+#p {
+  margin: 5px;
+  transform: translate(-5px, -15px);
+}
+</style>
 </head>
 <body>
-  <h1 id='h1'>WASD/arrows to move. Q to pause/resume.</h1>
-  <div id='move'></div>
-  <script>
-    let positionX = 0;
-    let positionY = 0;
-    let vx = 0;
-    let vy = 0;
-    let pause = false;
-    document.addEventListener(('keydown'), (e) => {
-      if (e.key === 'ArrowUp' || e.key === 'w') {
-        vy--;
-      };
-      if (e.key === 'ArrowDown' || e.key === 's') {
-        vy++;
-      };
-      if (e.key === 'ArrowLeft' || e.key === 'a') {
-        vx--;
-      };
-      if (e.key === 'ArrowRight' || e.key === 'd') {
-        vx++;
-      };
-      if (e.key === 'q') {
-        pause = !pause;
-        if (!pause) {
-          start();
-        };
-      };
-    });
-    const div = document.getElementById('move')
-    function start() {
-      if (!pause) {
-        positionX += vx;
-        positionY += vy;
-        if (positionX > window.innerWidth) {
-          positionX = 0;
-        } else if (positionX < 0) positionX = window.innerWidth;
-        if (positionY > window.innerHeight) {
-          positionY = 0;
-        } else if (positionY < 0) positionY = window.innerHeight;
-        div.style.transform = `translate(${positionX}px, ${positionY}px)`;
-        requestAnimationFrame(start);
-      };
+<h1 id='h1'>WASD/arrows to move. Q to pause/resume.</h1>
+<div id='move'></div>
+<div id='toggle'>
+  <p id='p'>Teleport</p>
+  <button onclick='toggle()' id='toggleBack'></button>
+  <button onclick='toggle()' id='toggleFront'></button>
+</div>
+<script>
+let positionX = 0;
+let positionY = 0;
+let vx = 0;
+let vy = 0;
+let pause = false;
+document.addEventListener(('keydown'), (e) => {
+  if (e.key === 'ArrowUp' || e.key === 'w') {
+    vy--;
+  };
+  if (e.key === 'ArrowDown' || e.key === 's') {
+    vy++;
+  };
+  if (e.key === 'ArrowLeft' || e.key === 'a') {
+    vx--;
+  };
+  if (e.key === 'ArrowRight' || e.key === 'd') {
+    vx++;
+  };
+  if (e.key === 'q') {
+    pause = !pause;
+    if (!pause) {
+      start();
     };
-    start();
-  </script>
+  };
+});
+const div = document.getElementById('move')
+let state = 1
+function toggle() {
+  state = -state;
+  if (state === -1) {
+    document.getElementById('p').textContent = 'Bounce';
+    document.getElementById('toggleFront').style.transform = 'translateX(35px)';
+  } else if (state === 1) {
+    document.getElementById('p').textContent = 'Teleport'
+    document.getElementById('toggleFront').style.transform = 'translateX(0px)';
+  }
+}
+function start() {
+  if (!pause) {
+    positionX += vx;
+    positionY += vy;
+    if (state === 1) {
+      if (positionX > window.innerWidth-52) {
+        positionX = 0;
+      } else if (positionX < 0) positionX = window.innerWidth-52;
+      if (positionY > window.innerHeight-52) {
+        positionY = 0;
+      } else if (positionY < 0) positionY = window.innerHeight-52;
+    } else if (state === -1) {
+      if (positionX > window.innerWidth-52 || positionX < 0) vx = -vx;
+      if (positionY > window.innerHeight-52 || positionY < 0) vy = -vy;
+    }
+    div.style.transform = `translate(${positionX}px, ${positionY}px)`;
+    requestAnimationFrame(start);
+  };
+};
+start();
+</script>
 </body>
 </html>
