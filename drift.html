@@ -1,13 +1,70 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Under work...</title>
+  <title>Experiment №2</title>
   <style>
+    #h1 {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+    #move {
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      background-color: blue;
+      border: 2px solid #000099;
+      width: 48px;
+      height: 48px;
+    }
   </style>
 </head>
 <body>
+  <h1 id='h1'>WASD/arrows to move. Q to pause/resume.</h1>
+  <div id='move'></div>
   <script>
-    console.log('Under work...')
+    let positionX = 0;
+    let positionY = 0;
+    let vx = 0;
+    let vy = 0;
+    let pause = false;
+    document.addEventListener(('keydown'), (e) => {
+      if (e.key === 'ArrowUp' || e.key === 'w') {
+        vy--;
+      };
+      if (e.key === 'ArrowDown' || e.key === 's') {
+        vy++;
+      };
+      if (e.key === 'ArrowLeft' || e.key === 'a') {
+        vx--;
+      };
+      if (e.key === 'ArrowRight' || e.key === 'd') {
+        vx++;
+      };
+      if (e.key === 'q') {
+        pause = !pause;
+        if (!pause) {
+          start();
+        };
+      };
+    });
+    const div = document.getElementById('move')
+    function start() {
+      if (!pause) {
+        positionX += vx;
+        positionY += vy;
+        if (positionX > window.innerWidth) {
+          positionX = 0;
+        } else if (positionX < 0) positionX = window.innerWidth;
+        if (positionY > window.innerHeight) {
+          positionY = 0;
+        } else if (positionY < 0) positionY = window.innerHeight;
+        div.style.transform = `translate(${positionX}px, ${positionY}px)`;
+        requestAnimationFrame(start);
+      };
+    };
+    start();
   </script>
 </body>
 </html>
