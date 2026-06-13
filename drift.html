@@ -3,14 +3,39 @@
 <head>
 <title>Experiment №2</title>
 <style>
-#h1 {
+#centre {
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+
+  display: grid;
+  grid-template-columns: auto auto auto;
+  grid-template-areas:
+    ". up ."
+    "left title right"
+    ". down .";
+
+  align-items: center;
+  justify-items: center;
+}
+
+.up    { grid-area: up; }
+.down  { grid-area: down; }
+.left  { grid-area: left; }
+.right { grid-area: right; }
+#h1    { grid-area: title; }
+
+.horizontal,
+.vertical {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 100px;
 }
 #move {
   position: absolute;
+  pointer-events: none;
   top: 0px;
   left: 0px;
   background-color: blue;
@@ -47,15 +72,29 @@
   margin: 5px;
   transform: translate(-5px, -15px);
 }
+#leftbottom {
+  left: 10px;
+  bottom: 10px;
+  position: absolute;
+}
 </style>
 </head>
 <body>
-<h1 id='h1'>WASD/arrows to move. Q to pause/resume.</h1>
+<div id="centre">
+  <button onclick="vy--" class="vertical up">▲</button>
+  <button onclick="vx++" class="horizontal right">▶</button>
+  <h1 id="h1">WASD/arrows to move. Q to pause/resume.</h1>
+  <button onclick="vx--" class="horizontal left">◀</button>
+  <button onclick="vy++" class="vertical down">▼</button>
+</div>
 <div id='move'></div>
 <div id='toggle'>
   <p id='p'>Teleport</p>
   <button onclick='toggle()' id='toggleBack'></button>
   <button onclick='toggle()' id='toggleFront'></button>
+</div>
+<div id='leftbottom'>
+  <p id='text'>Touch here if on phone or tablet</p>
 </div>
 <script>
 let positionX = 0;
@@ -63,20 +102,22 @@ let positionY = 0;
 let vx = 0;
 let vy = 0;
 let pause = false;
+let onPhone = false
 document.addEventListener(('keydown'), (e) => {
-  if (e.key === 'ArrowUp' || e.key === 'w') {
+  let key = e.key.toLowerCase();
+  if (key === 'arrowup' || key === 'w') {
     vy--;
   };
-  if (e.key === 'ArrowDown' || e.key === 's') {
+  if (key === 'arrowdown' || key === 's') {
     vy++;
   };
-  if (e.key === 'ArrowLeft' || e.key === 'a') {
+  if (key === 'arrowleft' || key === 'a') {
     vx--;
   };
-  if (e.key === 'ArrowRight' || e.key === 'd') {
+  if (key === 'arrowright' || key === 'd') {
     vx++;
   };
-  if (e.key === 'q') {
+  if (key === 'q') {
     pause = !pause;
     if (!pause) {
       start();
@@ -114,6 +155,24 @@ function start() {
     requestAnimationFrame(start);
   };
 };
+start();
+function showButtons() {
+  if (!onPhone) {
+    onPhone = true
+    document.querySelectorAll('.horizontal, .vertical')
+      .forEach(button => button.style.display = 'block');
+    document.getElementById('h1').textContent = 'These buttons to move.'
+    document.getElementById('text').textContent = 'Touch here to pause/resume.'
+  } else if (onPhone) {
+    pause = !pause;
+    if (!pause) {
+      start();
+    }
+  }
+}
+document.getElementById('leftbottom').onclick = function () {
+  showButtons();
+}
 start();
 </script>
 </body>
