@@ -93,9 +93,9 @@
   <button onclick="vy++" class="vertical down">▼</button>
 </div>
 <div id='speeds'>
-  <p id='total'>Total velocity: 0 pixels per second</p>
-  <p id='xSpeed'>  X component: 0 pixels per second</p>
-  <p id='ySpeed'>  Y component: 0 pixels per second</p>
+  <p id='total'>Total velocity: 0 pixels per second  </p>
+  <p id='xSpeed'>X component: 0 pixels per second</p>
+  <p id='ySpeed'>Y component: 0 pixels per second</p>
 </div>
 <div id='move'></div>
 <div id='toggle'>
@@ -168,9 +168,9 @@ function start() {
   };
   a = (vx**2 + vy**2)**(1/2);
   vtotal = Math.round(a*100)/100;
-  document.getElementById('xSpeed').textContent = '  X component: '+Math.abs(vx)+' pixels per second';
-  document.getElementById('ySpeed').textContent = '  Y component: '+Math.abs(vy)+' pixels per second';
-  document.getElementById('total').textContent = 'Total velocity: '+vtotal+' pixels per second';
+  document.getElementById('xSpeed').textContent = 'X component: '+Math.abs(vx)+' pixels per second';
+  document.getElementById('ySpeed').textContent = 'Y component: '+Math.abs(vy)+' pixels per second';
+  document.getElementById('total').textContent = 'Total velocity: '+vtotal+' pixels per second  ';
 };
 start();
 function showButtons() {
