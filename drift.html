@@ -43,6 +43,11 @@
   width: 48px;
   height: 48px;
 }
+#speeds {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+}
 #toggle {
   position: absolute;
   bottom: 10px;
@@ -87,6 +92,11 @@
   <button onclick="vx--" class="horizontal left">◀</button>
   <button onclick="vy++" class="vertical down">▼</button>
 </div>
+<div id='speeds'>
+  <p id='total'>Total velocity: 0 pixels per second</p>
+  <p id='xSpeed'>  X component: 0 pixels per second</p>
+  <p id='ySpeed'>  Y component: 0 pixels per second</p>
+</div>
 <div id='move'></div>
 <div id='toggle'>
   <p id='p'>Teleport</p>
@@ -101,6 +111,8 @@ let positionX = 0;
 let positionY = 0;
 let vx = 0;
 let vy = 0;
+let vtotal = 0
+let a = 0
 let pause = false;
 let onPhone = false
 document.addEventListener(('keydown'), (e) => {
@@ -121,9 +133,9 @@ document.addEventListener(('keydown'), (e) => {
     pause = !pause;
     if (!pause) {
       start();
-    };
-  };
-});
+    }
+  }
+})
 const div = document.getElementById('move')
 let state = 1
 function toggle() {
@@ -154,6 +166,11 @@ function start() {
     div.style.transform = `translate(${positionX}px, ${positionY}px)`;
     requestAnimationFrame(start);
   };
+  a = (vx**2 + vy**2)**(1/2);
+  vtotal = Math.round(a*100)/100;
+  document.getElementById('xSpeed').textContent = '  X component: '+Math.abs(vx)+' pixels per second';
+  document.getElementById('ySpeed').textContent = '  Y component: '+Math.abs(vy)+' pixels per second';
+  document.getElementById('total').textContent = 'Total velocity: '+vtotal+' pixels per second';
 };
 start();
 function showButtons() {
