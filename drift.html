@@ -53,29 +53,47 @@
   bottom: 10px;
   right: 10px;
 }
-#toggleBack {
-  position: absolute;
-  right: 10px;
-  bottom: 10px;
+.toggleBack {
   height: 10px;
   width: 45px;
   background-color: white;
   border: 2px solid #999999;
   border-radius: 7px;
 }
-#toggleFront {
-  position: absolute;
-  bottom: 7px;
-  left: 3px;
+.toggleFront {
   width: 16px;
   height: 16px;
   border: 2px solid #0000ff;
   border-radius: 50%;
   background-color: #0066ff;
 }
+#toggleFrontWall {
+  position: absolute;
+  bottom: 7px;
+  left: 3px;
+}
+#toggleBackWall {
+  position: absolute;
+  left: 8px;
+  bottom: 10px;
+}
+#toggleFrontMode {
+  position: absolute;
+  left: 3px;
+  bottom: 37px;
+}
+#toggleBackMode {
+  position: absolute;
+  right: 10px;
+  bottom: 40px;
+}
 #p {
   margin: 5px;
   transform: translate(-5px, -15px);
+}
+#p2 {
+  margin: 5px;
+  transform: translate(-5px, -25px);
 }
 #leftbottom {
   left: 10px;
@@ -86,11 +104,11 @@
 </head>
 <body>
 <div id="centre">
-  <button onclick="vy--" class="vertical up">▲</button>
-  <button onclick="vx++" class="horizontal right">▶</button>
+  <button onclick="up()" class="vertical up">▲</button>
+  <button onclick="right()" class="horizontal right">▶</button>
   <h1 id="h1">WASD/arrows to move. Q to pause/resume.</h1>
-  <button onclick="vx--" class="horizontal left">◀</button>
-  <button onclick="vy++" class="vertical down">▼</button>
+  <button onclick="left()" class="horizontal left">◀</button>
+  <button onclick="down()" class="vertical down">▼</button>
 </div>
 <div id='speeds'>
   <p id='total'>Total velocity: 0 pixels per frame  </p>
@@ -99,9 +117,12 @@
 </div>
 <div id='move'></div>
 <div id='toggle'>
+  <p id='p2'>Speed</p>
+  <button id='toggleBackMode' onclick='toggleArrowFunction()' class='toggleBack'></button>
+  <button id='toggleFrontMode' onclick='toggleArrowFunction()' class='toggleFront'></button>
   <p id='p'>Teleport</p>
-  <button onclick='toggle()' id='toggleBack'></button>
-  <button onclick='toggle()' id='toggleFront'></button>
+  <button id='toggleBackWall' onclick='toggleWallCollision()' class='toggleBack'></button>
+  <button id='toggleFrontWall' onclick='toggleWallCollision()' class='toggleFront'></button>
 </div>
 <div id='leftbottom'>
   <p id='text'>Touch here if on phone or tablet</p>
@@ -113,21 +134,37 @@ let vx = 0;
 let vy = 0;
 let vtotal = 0
 let a = 0
+let ax = 0
+let ay = 0
 let pause = false;
 let onPhone = false
+let stateWall = 1
+let stateMode = 1
+function up() {
+  stateMode === 1 ? vy-- : ay--;
+}
+function down() {
+  stateMode === 1 ? vy++ : ay++;
+}
+function right() {
+  stateMode === 1 ? vx++ : ax++;
+}
+function left() {
+  stateMode === 1 ? vx-- : ax--;
+}
 document.addEventListener(('keydown'), (e) => {
   let key = e.key.toLowerCase();
   if (key === 'arrowup' || key === 'w') {
-    vy--;
+    up();
   };
   if (key === 'arrowdown' || key === 's') {
-    vy++;
+    down();
   };
   if (key === 'arrowleft' || key === 'a') {
-    vx--;
+    left();
   };
   if (key === 'arrowright' || key === 'd') {
-    vx++;
+    right();
   };
   if (key === 'q') {
     pause = !pause;
@@ -137,31 +174,56 @@ document.addEventListener(('keydown'), (e) => {
   }
 })
 const div = document.getElementById('move')
-let state = 1
-function toggle() {
-  state = -state;
-  if (state === -1) {
+function toggleWallCollision() {
+  stateWall = -stateWall;
+  if (stateWall === -1) {
     document.getElementById('p').textContent = 'Bounce';
-    document.getElementById('toggleFront').style.transform = 'translateX(35px)';
-  } else if (state === 1) {
+    document.getElementById('toggleFrontWall').style.transform = 'translateX(35px)';
+  } else if (stateWall === 1) {
     document.getElementById('p').textContent = 'Teleport'
-    document.getElementById('toggleFront').style.transform = 'translateX(0px)';
+    document.getElementById('toggleFrontWall').style.transform = 'translateX(0px)';
+  }
+}
+function toggleArrowFunction() {
+  ax = 0;
+  ay = 0;
+  stateMode = -stateMode;
+  if (stateMode === -1) {
+    document.getElementById('p2').textContent = 'Gravity';
+    document.getElementById('toggleFrontMode').style.transform = 'translateX(35px)';
+  } else if (stateMode === 1) {
+    document.getElementById('p2').textContent = 'Speed'
+    document.getElementById('toggleFrontMode').style.transform = 'translateX(0px)';
   }
 }
 function start() {
   if (!pause) {
+    vx += ax;
+    vy += ay;
     positionX += vx;
     positionY += vy;
-    if (state === 1) {
+    if (stateWall === 1) {
       if (positionX > window.innerWidth-52) {
         positionX = 0;
       } else if (positionX < 0) positionX = window.innerWidth-52;
       if (positionY > window.innerHeight-52) {
         positionY = 0;
       } else if (positionY < 0) positionY = window.innerHeight-52;
-    } else if (state === -1) {
-      if (positionX > window.innerWidth-52 || positionX < 0) vx = -vx;
-      if (positionY > window.innerHeight-52 || positionY < 0) vy = -vy;
+    } else if (stateWall === -1) {
+      if (positionX > window.innerWidth-52) {
+        vx = -vx;
+        positionX = window.innerWidth - 52;
+      } else if (positionX < 0) {
+        vx = -vx;
+        positionX = 0;
+      }
+      if (positionY > window.innerHeight-52) {
+        vy = -vy;
+        positionY = window.innerHeight - 52;
+      } else if (positionY < 0) {
+        vy = -vy;
+        positionY = 0;
+      }
     }
     div.style.transform = `translate(${positionX}px, ${positionY}px)`;
     requestAnimationFrame(start);
