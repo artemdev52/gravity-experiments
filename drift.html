@@ -173,6 +173,12 @@ document.addEventListener(('keydown'), (e) => {
     }
   }
 })
+const now = [new Date().getDate(), new Date().getMonth() + 1]
+const april_fools = [1, 4]
+if (now.join() === april_fools.join()) {
+  document.body.style.filter = 'invert(1)';
+  document.title = '🫪';
+}
 const div = document.getElementById('move')
 function toggleWallCollision() {
   stateWall = -stateWall;
