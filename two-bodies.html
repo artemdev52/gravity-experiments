@@ -116,7 +116,19 @@ function computeForce() {
   ball1.style.left = greenPar.x + 'px'; 
   ball1.style.top = greenPar.y + 'px'; 
   ball2.style.left = redPar.x + 'px'; 
-  ball2.style.top = redPar.y + 'px'; 
+  ball2.style.top = redPar.y + 'px';
+  let trailG = document.createElement('div');
+  trailG.textContent = '∙';
+  trailG.style.position = 'absolute';
+  trailG.style.color = '#0aff0a';
+  trailG.style.left = greenPar.x + 'px';
+  trailG.style.top = greenPar.y + 'px'; 
+  let trailR = document.createElement('div');
+  trailR.textContent = '∙';
+  trailR.style.position = 'absolute';
+  trailR.style.color = '#ff0000';
+  trailR.style.left = redPar.x + 'px';
+  trailR.style.top = redPar.y + 'px'; 
   requestAnimationFrame(computeForce); 
 } 
 function submitVariables() {
