@@ -124,6 +124,9 @@ function computeForce() {
   trailG.style.left = greenPar.x + 'px';
   trailG.style.top = greenPar.y + 'px'; 
   trailG.classList.add('trail');
+  setTimeout(() => {
+    trailG.remove();
+  }, 10000); 
   document.appendChild(trailG);
   let trailR = document.createElement('div');
   trailR.textContent = '∙';
@@ -133,6 +136,9 @@ function computeForce() {
   trailR.style.top = redPar.y + 'px'; 
   trailR.classList.add('trail');
   document.appendChild(trailR);
+  setTimeout(() => {
+    trailR.remove();
+  }, 10000);
   requestAnimationFrame(computeForce); 
 } 
 function submitVariables() {
