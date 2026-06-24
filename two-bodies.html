@@ -97,6 +97,7 @@ let redPar = {
   vx: -0.1, 
   vy: 0, 
 } 
+let running = false;
 let dx = redPar.x - greenPar.x;
 let dy = redPar.y - greenPar.y;
 let r = Math.hypot(dx, dy);
@@ -139,9 +140,12 @@ function computeForce() {
   setTimeout(() => {
     trailR.remove();
   }, 10000);
-  requestAnimationFrame(computeForce); 
+  if (running) {
+    requestAnimationFrame(computeForce);
+  } 
 } 
 function submitVariables() {
+  running = true;
   g = Number(document.getElementById('g').value);
   greenPar = {
     mass: Number(document.getElementById('mGreen').value), 
@@ -166,6 +170,7 @@ function submitVariables() {
   computeForce();
 }
 function showSettings() {
+  running = false;
   document.getElementById('settings').style.display = 'block';
   document.getElementById('showButton').style.display = 'none';
 }
