@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Experiment №3</title>
+<style>
+body {
+  background-color: #330088;
+  color: #ffffff;
+}
+#green {
+  position: absolute;
+  top: 200px;
+  left: 350px;
+  border: 15px solid #0aff0a;
+  border-radius: 15px;
+  z-index: 2;
+}
+#red {
+  position: absolute;
+  top: 400px;
+  left: 350px;
+  border: 15px solid #ff0000;
+  border-radius: 15px;
+  z-index: 2;
+}
+#settings {
+  z-index: 3;
+  background-color: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  top: 0px;
+  right: 0px; 
+  border: 2px solid black;
+  padding-left: 5px;
+}
+#showButton {
+  position: fixed;
+  top: 0px;
+  right: 0px;
+  display: none;
+}
+</style>
+</head>
+<body>
+<div id='green'></div>
+<div id='red'></div>
+<div id='settings'>
+  <label>G: <input id="g" type="number" value="66"></label>
+  <h3>Green body</h3>
+  <label>Mass: <input id="mGreen" type="number" value="1"></label>
+  <p></p>
+  <label>X: <input id="greenX" type="number" value="500"></label>
+  <p></p>
+  <label>Y: <input id="greenY" type="number" value="100"></label>
+  <p></p>
+  <label>Speed on X: <input id="greenVx" type="number" value="1" step="0.1"></label>
+  <p></p>
+  <label>Speed on Y: <input id="greenVy" type="number" value="1" step="0.1"></label>
+
+  <h3>Red body</h3>
+  <label>Mass: <input id="mRed" type="number" value="50"></label>
+  <p></p>
+  <label>X: <input id="redX" type="number" value="350"></label>
+  <p></p>
+  <label>Y: <input id="redY" type="number" value="500"></label>
+  <p></p>
+  <label>Speed on X: <input id="redVx" type="number" value="-0.1" step="0.1"></label>
+  <p></p>
+  <label>Speed on Y: <input id="redVy" type="number" value="0" step="0.1"></label>
+  <p></p>
+  <button onclick='submitVariables()'>Run the simulation</button>
+</div>
+<button id='showButton' onclick='showSettings()'>Settings</button>
+<script>
+for (let i = 0; i < 100; i++) {
+  let star = document.createElement('div');
+  star.textContent = '.';
+  star.style.position = 'fixed';
+  star.style.left = Math.floor(Math.random() * (window.innerWidth - 5)) + 'px';
+  star.style.top = Math.floor(Math.random() * (window.innerHeight - 5)) + 'px';
+  star.style.zIndex = 0;
+  document.body.appendChild(star);
+}
+const ball1 = document.getElementById('green') 
+const ball2 = document.getElementById('red') 
+let g = 66
+let greenPar = { 
+  mass: 1, 
+  x: 500, 
+  y: 100, 
+  vx: 1, 
+  vy: 1, 
+} 
+let redPar = { 
+  mass: 50, 
+  x: 350, 
+  y: 500, 
+  vx: -0.1, 
+  vy: 0, 
+} 
+let dx = redPar.x - greenPar.x;
+let dy = redPar.y - greenPar.y;
+let r = Math.hypot(dx, dy);
+function computeForce() { 
+  dx = redPar.x - greenPar.x;
+  dy = redPar.y - greenPar.y;
+  r = Math.hypot(dx, dy);
+  let f = g * (greenPar.mass * redPar.mass / r**2);
+  greenPar.vx += f / greenPar.mass * dx / r; 
+  greenPar.vy += f / greenPar.mass * dy / r; 
+  redPar.vx += f / redPar.mass * -dx / r; 
+  redPar.vy += f / redPar.mass * -dy / r; 
+  greenPar.x += greenPar.vx; 
+  greenPar.y += greenPar.vy; 
+  redPar.x += redPar.vx; 
+  redPar.y += redPar.vy; 
+  ball1.style.left = greenPar.x + 'px'; 
+  ball1.style.top = greenPar.y + 'px'; 
+  ball2.style.left = redPar.x + 'px'; 
+  ball2.style.top = redPar.y + 'px'; 
+  requestAnimationFrame(computeForce); 
+} 
+function submitVariables() {
+  g = Number(document.getElementById('g').value);
+  greenPar = {
+    mass: Number(document.getElementById('mGreen').value), 
+    x: Number(document.getElementById('greenX').value), 
+    y: Number(document.getElementById('greenY').value), 
+    vx: Number(document.getElementById('greenVx').value), 
+    vy: Number(document.getElementById('greenVy').value), 
+  };
+  redPar = {
+    mass: Number(document.getElementById('mRed').value), 
+    x: Number(document.getElementById('redX').value), 
+    y: Number(document.getElementById('redY').value), 
+    vx: Number(document.getElementById('redVx').value), 
+    vy: Number(document.getElementById('redVy').value),
+  };
+  document.getElementById('settings').style.display = 'none';
+  document.getElementById('showButton').style.display = 'inline-block';
+  computeForce();
+}
+function showSettings() {
+  document.getElementById('settings').style.display = 'block';
+  document.getElementById('showButton').style.display = 'none';
+}
+</script>
+</body>
+</html>
