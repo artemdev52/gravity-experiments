@@ -124,10 +124,10 @@ function computeForce() {
   trailG.style.left = greenPar.x + 'px';
   trailG.style.top = greenPar.y + 'px'; 
   trailG.classList.add('trail');
+  document.appendChild(trailG); 
   setTimeout(() => {
     trailG.remove();
   }, 10000); 
-  document.appendChild(trailG);
   let trailR = document.createElement('div');
   trailR.textContent = '∙';
   trailR.style.position = 'absolute';
