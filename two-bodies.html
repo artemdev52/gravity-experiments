@@ -243,8 +243,8 @@ function choosePreset() {
   const index = Math.floor(Math.random() * presets.length);
   const preset = presets[index];
   g = preset.g;
-  greenPar = preset.greenPar;
-  redPar = preset.redPar;
+  greenPar = {...preset.greenPar};
+  redPar = {...preset.redPar};
   document.getElementById('g').value = g;
 
   document.getElementById('mGreen').value = greenPar.mass;
