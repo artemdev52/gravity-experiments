@@ -245,6 +245,18 @@ function choosePreset() {
   g = preset.g;
   greenPar = preset.greenPar;
   redPar = preset.redPar;
+  document.getElementById('g').value = g;
+
+  document.getElementById('mGreen').value = greenPar.mass;
+  document.getElementById('greenX').value = greenPar.x;
+  document.getElementById('greenY').value = greenPar.y;
+  document.getElementById('greenVx').value = greenPar.vx;
+  document.getElementById('greenVy').value = greenPar.vy;
+  document.getElementById('mRed').value = redPar.mass;
+  document.getElementById('redX').value = redPar.x;
+  document.getElementById('redY').value = redPar.y;
+  document.getElementById('redVx').value = redPar.vx;
+  document.getElementById('redVy').value = redPar.vy;
   running = true;
   document.getElementById('settings').style.display = 'none';
   document.getElementById('showButton').style.display = 'inline-block';
