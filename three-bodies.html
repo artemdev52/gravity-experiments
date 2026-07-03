@@ -90,6 +90,7 @@ div {
 <div id='red'></div>
 <div id='center'>⊙</div>
 <div id='settings'>
+  <h2>The simulation is NOT perfect.</h2>
   <label>G: <input id="g" type="number" value="1000"></label>
   <p></p>
   <button onclick='greenShow()'>Settings for green</button>
@@ -216,6 +217,39 @@ function run() {
   dxRG = greenPar.x - redPar.x;
   dyRG = greenPar.y - redPar.y;
   rRG = Math.hypot(dxRG, dyRG);
+  let trailG = document.createElement('div');
+  trailG.textContent = '∙';
+  trailG.style.position = 'absolute';
+  trailG.style.color = '#0aff0a';
+  trailG.style.left = greenPar.x + 13 + 'px';
+  trailG.style.top = greenPar.y + 13 + 'px'; 
+  trailG.classList.add('trail');
+  document.body.appendChild(trailG); 
+  setTimeout(() => {
+    trailG.remove();
+  }, 10000); 
+  let trailY = document.createElement('div');
+  trailY.textContent = '∙';
+  trailY.style.position = 'absolute';
+  trailY.style.color = '#ffff00';
+  trailY.style.left = yellowPar.x + 13 + 'px';
+  trailY.style.top = yellowPar.y + 13 + 'px'; 
+  trailY.classList.add('trail');
+  document.body.appendChild(trailY);
+  setTimeout(() => {
+    trailY.remove();
+  }, 10000);
+  let trailR = document.createElement('div');
+  trailR.textContent = '∙';
+  trailR.style.position = 'absolute';
+  trailR.style.color = '#ff0000';
+  trailR.style.left = redPar.x + 13 + 'px';
+  trailR.style.top = redPar.y + 13 + 'px'; 
+  trailR.classList.add('trail');
+  document.body.appendChild(trailR);
+  setTimeout(() => {
+    trailR.remove();
+  }, 10000);
   center.style.left = (greenPar.mass * greenPar.x + yellowPar.mass * yellowPar.x + redPar.mass * redPar.x) / (greenPar.mass + yellowPar.mass + redPar.mass) + 'px';
   center.style.top = (greenPar.mass * greenPar.y + yellowPar.mass * yellowPar.y + redPar.mass * redPar.y) / (greenPar.mass + yellowPar.mass + redPar.mass) + 'px';
   if (running) {
@@ -248,6 +282,10 @@ function submitVariables() {
   };
   document.getElementById('settings').style.display = 'none';
   document.getElementById('showButton').style.display = 'inline-block';
+  let trails = document.querySelectorAll('.trail');
+  for (let trail of trails) {
+    trail.remove();
+  }
   run();
 }
 function showSettings() {
@@ -278,6 +316,27 @@ const presets = [
       vx: 2,
       vy: 1,
     }
+  }, 
+  {g: 1000,
+    greenPar: {
+      mass: 1,
+      x: 600,
+      y: 300,
+      vx: -1.6,
+      vy: 0
+    }, yellowPar: {
+      mass: 0.1,
+      x: 600,
+      y: 0,
+      vx: 1.6,
+      vy: 0
+    }, redPar: {
+      mass: 1,
+      x: 600,
+      y: 500,
+      vx: 1.6,
+      vy: 0
+    }
   }
 ]
 function choosePreset() {
@@ -306,6 +365,10 @@ function choosePreset() {
   running = true;
   document.getElementById('settings').style.display = 'none';
   document.getElementById('showButton').style.display = 'inline-block';
+  let trails = document.querySelectorAll('.trail');
+  for (let trail of trails) {
+    trail.remove();
+  }
   run();
 }
 function greenShow() {
