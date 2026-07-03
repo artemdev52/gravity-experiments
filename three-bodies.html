@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Experiment №4</title>
+<style>
+body {
+  background-color: #330088;
+  color: white;
+}
+div {
+  position: absolute;
+  z-index: 1;
+}
+#center {
+  border-radius: 50%;
+  border: 2px solid transparent;
+  left: 250px;
+  top: 157px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 25px;
+  width: 30px;
+  height: 30px;
+  text-shadow:
+    0 0 5px #ccff77,
+    0 0 10px #ccff77,
+    0 0 15px #ccff77,
+    0 0 20px #ccff77;
+}
+#green {
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  left: 150px;
+  top: 100px;
+  border: 2px solid #00aa00;
+  background-color: #0aff0a;
+}
+#yellow {
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  left: 350px; 
+  top: 100px;
+  border: 2px solid #aaaa00;
+  background-color: #ffff00;
+}
+#red {
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  left: 250px; 
+  top: 272px;
+  border: 2px solid #aa0000;
+  background-color: #ff0000;
+}
+#settings {
+  z-index: 2;
+  background-color: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  top: 0px;
+  right: 0px; 
+  border: 2px solid black;
+  padding-left: 5px;
+}
+#showButton {
+  position: fixed;
+  top: 0px;
+  right: 0px;
+  display: none;
+}
+#greenSet {
+  position: static;
+  display: none;
+}
+#yellowSet {
+  position: static;
+  display: none;
+}
+#redSet {
+  position: static;
+  display: none;
+}
+</style>
+</head>
+<body>
+<div id='green'></div>
+<div id='yellow'></div>
+<div id='red'></div>
+<div id='center'>⊙</div>
+<div id='settings'>
+  <label>G: <input id="g" type="number" value="1000"></label>
+  <p></p>
+  <button onclick='greenShow()'>Settings for green</button>
+  <div id='greenSet'>
+    <label>  Mass: <input id="mGreen" type="number" value="1"></label>
+    <p></p>
+    <label>  X: <input id="greenX" type="number" value="600"></label>
+    <p></p>
+    <label>  Y: <input id="greenY" type="number" value="600"></label>
+    <p></p>
+    <label>  Speed on X: <input id="greenVx" type="number" value="0" step="0.1"></label>
+    <p></p>
+    <label>  Speed on Y: <input id="greenVy" type="number" value="2" step="0.1"></label>
+    <p></p>
+  </div>
+  <button onclick='yellowShow()'>Settings for yellow</button>
+  <div id='yellowSet'>
+    <label>  Mass: <input id="mYellow" type="number" value="1"></label>
+    <p></p>
+    <label>  X: <input id="yellowX" type="number" value="500"></label>
+    <p></p>
+    <label>  Y: <input id="yellowY" type="number" value="600"></label>
+    <p></p>
+    <label>  Speed on X: <input id="yellowVx" type="number" value="0" step="0.1"></label>
+    <p></p>
+    <label>  Speed on Y: <input id="yellowVy" type="number" value="-2" step="0.1"></label>
+    <p></p>
+  </div>
+  <button onclick='redShow()'>Settings for red</button>
+  <div id='redSet'>
+    <label>  Mass: <input id="mRed" type="number" value="2"></label>
+    <p></p>
+    <label>  X: <input id="redX" type="number" value="350"></label>
+    <p></p>
+    <label>  Y: <input id="redY" type="number" value="100"></label>
+    <p></p>
+    <label>  Speed on X: <input id="redVx" type="number" value="2" step="0.1"></label>
+    <p></p>
+    <label>  Speed on Y: <input id="redVy" type="number" value="1" step="0.1"></label>
+    <p></p>
+  </div>
+  <p></p>
+  <button onclick='submitVariables()'>Run the simulation</button>
+  <button onclick='choosePreset()'>Random preset</button>
+</div>
+<button onclick='showSettings()' id='showButton'>Settings</button>
+<script>
+document.getElementById('greenSet').style.display = 'none';
+document.getElementById('yellowSet').style.display = 'none';
+document.getElementById('redSet').style.display = 'none';
+for (let i = 0; i < 100; i++) {
+  let star = document.createElement('div');
+  star.textContent = '.';
+  star.style.position = 'fixed';
+  star.style.left = Math.floor(Math.random() * (window.innerWidth - 5)) + 'px';
+  star.style.top = Math.floor(Math.random() * (window.innerHeight - 5)) + 'px';
+  star.style.zIndex = 0;
+  document.body.appendChild(star);
+}
+const green = document.getElementById('green');
+const yellow = document.getElementById('yellow');
+const red = document.getElementById('red');
+const center = document.getElementById('center');
+let greenPar = {
+  mass: 1,
+  x: 600,
+  y: 600,
+  vx: 0,
+  vy: 2,
+};
+let yellowPar = {
+  mass: 1,
+  x: 500,
+  y: 600,
+  vx: 0,
+  vy: -2,
+};
+let redPar = {
+  mass: 2,
+  x: 350,
+  y: 100,
+  vx: 2,
+  vy: 1,
+};
+let g = 1000;
+let dxGY = yellowPar.x - greenPar.x;
+let dyGY = yellowPar.y - greenPar.y;
+let rGY = Math.hypot(dxGY, dyGY);
+let dxYR = redPar.x - yellowPar.x;
+let dyYR = redPar.y - yellowPar.y;
+let rYR = Math.hypot(dxYR, dyYR);
+let dxRG = greenPar.x - redPar.x;
+let dyRG = greenPar.y - redPar.y;
+let rRG = Math.hypot(dxRG, dyRG);
+let running = false;
+function run() {
+  const fGY = g * (greenPar.mass * yellowPar.mass / rGY ** 2);
+  const fYR = g * (redPar.mass * yellowPar.mass / rYR ** 2);
+  const fRG = g * (greenPar.mass * redPar.mass / rRG ** 2);
+  greenPar.vx += fGY / greenPar.mass * dxGY / rGY - fRG / greenPar.mass * dxRG / rRG;
+  greenPar.vy += fGY / greenPar.mass * dyGY / rGY - fRG / greenPar.mass * dyRG / rRG;
+  yellowPar.vx -= fGY / yellowPar.mass * dxGY / rGY - fYR / yellowPar.mass * dxYR / rYR;
+  yellowPar.vy -= fGY / yellowPar.mass * dyGY / rGY - fYR / yellowPar.mass * dyYR / rYR;
+  redPar.vx -= fYR / redPar.mass * dxYR / rYR - fRG / redPar.mass * dxRG / rRG;
+  redPar.vy -= fYR / redPar.mass * dyYR / rYR - fRG / redPar.mass * dyRG / rRG;
+  greenPar.x += greenPar.vx;
+  greenPar.y += greenPar.vy;
+  yellowPar.x += yellowPar.vx;
+  yellowPar.y += yellowPar.vy;
+  redPar.x += redPar.vx;
+  redPar.y += redPar.vy
+  green.style.left = greenPar.x + 'px';
+  green.style.top = greenPar.y + 'px';
+  yellow.style.left = yellowPar.x + 'px';
+  yellow.style.top = yellowPar.y + 'px';
+  red.style.left = redPar.x + 'px';
+  red.style.top = redPar.y + 'px';
+  dxGY = yellowPar.x - greenPar.x;
+  dyGY = yellowPar.y - greenPar.y;
+  rGY = Math.hypot(dxGY, dyGY);
+  dxYR = redPar.x - yellowPar.x;
+  dyYR = redPar.y - yellowPar.y;
+  rYR = Math.hypot(dxYR, dyYR);
+  dxRG = greenPar.x - redPar.x;
+  dyRG = greenPar.y - redPar.y;
+  rRG = Math.hypot(dxRG, dyRG);
+  center.style.left = (greenPar.mass * greenPar.x + yellowPar.mass * yellowPar.x + redPar.mass * redPar.x) / (greenPar.mass + yellowPar.mass + redPar.mass) + 'px';
+  center.style.top = (greenPar.mass * greenPar.y + yellowPar.mass * yellowPar.y + redPar.mass * redPar.y) / (greenPar.mass + yellowPar.mass + redPar.mass) + 'px';
+  if (running) {
+    requestAnimationFrame(run);
+  }
+}
+function submitVariables() {
+  running = true;
+  g = Number(document.getElementById('g').value);
+  greenPar = {
+    mass: Number(document.getElementById('mGreen').value), 
+    x: Number(document.getElementById('greenX').value), 
+    y: Number(document.getElementById('greenY').value), 
+    vx: Number(document.getElementById('greenVx').value), 
+    vy: Number(document.getElementById('greenVy').value), 
+  };
+  yellowPar = {
+    mass: Number(document.getElementById('mYellow').value), 
+    x: Number(document.getElementById('yellowX').value), 
+    y: Number(document.getElementById('yellowY').value), 
+    vx: Number(document.getElementById('yellowVx').value), 
+    vy: Number(document.getElementById('yellowVy').value),
+  };
+  redPar = {
+    mass: Number(document.getElementById('mRed').value), 
+    x: Number(document.getElementById('redX').value), 
+    y: Number(document.getElementById('redY').value), 
+    vx: Number(document.getElementById('redVx').value), 
+    vy: Number(document.getElementById('redVy').value),
+  };
+  document.getElementById('settings').style.display = 'none';
+  document.getElementById('showButton').style.display = 'inline-block';
+  run();
+}
+function showSettings() {
+  running = false;
+  document.getElementById('settings').style.display = 'block';
+  document.getElementById('showButton').style.display = 'none';
+}
+const presets = [
+  {g: 1000,
+    greenPar: {
+      mass: 1,
+      x: 600,
+      y: 600,
+      vx: 0,
+      vy: 2,
+    },
+    yellowPar: {
+      mass: 1,
+      x: 500,
+      y: 600,
+      vx: 0,
+      vy: -2,
+    },
+    redPar: {
+      mass: 2,
+      x: 350,
+      y: 100,
+      vx: 2,
+      vy: 1,
+    }
+  }
+]
+function choosePreset() {
+  const index = Math.floor(Math.random() * presets.length);
+  const preset = presets[index];
+  g = preset.g;
+  greenPar = {...preset.greenPar};
+  yellowPar = {...preset.yellowPar};
+  redPar = {...preset.redPar};
+  document.getElementById('g').value = g;
+  document.getElementById('mGreen').value = greenPar.mass;
+  document.getElementById('greenX').value = greenPar.x;
+  document.getElementById('greenY').value = greenPar.y;
+  document.getElementById('greenVx').value = greenPar.vx;
+  document.getElementById('greenVy').value = greenPar.vy;
+  document.getElementById('mYellow').value = yellowPar.mass;
+  document.getElementById('yellowX').value = yellowPar.x;
+  document.getElementById('yellowY').value = yellowPar.y;
+  document.getElementById('yellowVx').value = yellowPar.vx;
+  document.getElementById('yellowVy').value = yellowPar.vy;
+  document.getElementById('mRed').value = redPar.mass;
+  document.getElementById('redX').value = redPar.x;
+  document.getElementById('redY').value = redPar.y;
+  document.getElementById('redVx').value = redPar.vx;
+  document.getElementById('redVy').value = redPar.vy;
+  running = true;
+  document.getElementById('settings').style.display = 'none';
+  document.getElementById('showButton').style.display = 'inline-block';
+  run();
+}
+function greenShow() {
+  if (document.getElementById('greenSet').style.display === 'none') {
+    document.getElementById('greenSet').style.display = 'block';
+  } else {
+    document.getElementById('greenSet').style.display = 'none';
+  }
+}
+function yellowShow() {
+  if (document.getElementById('yellowSet').style.display === 'none') {
+    document.getElementById('yellowSet').style.display = 'block';
+  } else {
+    document.getElementById('yellowSet').style.display = 'none';
+  }
+}
+function redShow() {
+  if (document.getElementById('redSet').style.display === 'none') {
+    document.getElementById('redSet').style.display = 'block';
+  } else {
+    document.getElementById('redSet').style.display = 'none';
+  }
+}
+</script>
+</body>
+</html>
