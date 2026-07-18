@@ -1,50 +1,191 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Experiment №1</title>
-  <style>
-    #ball {
-      position: absolute;
-      left: 50%;
-      top: 50px;
-      width: 48px;
-      height: 48px;
-      border: 2px solid green;
-      border-radius: 25px;
-      background-color: #0aff0a;
-    }
-    #border {
-      border: 1px solid red;
-      position: absolute;
-      top: 50%;
-      transform: translateY(-1px);
-      left: 0px;
-      width: 100%;
-    }
+<title>Experiment №1</title>
+<style>
+#earth {
+  width: 220px;
+  height: 220px;
+  position: absolute;
+  left: 200px;
+  top: 200px;
+  border-radius: 50%;
+  border: 2px solid #00aaff;
+  background-color: #0aff0a;
+}
+#ball {
+  border: 5px solid #ffe600;
+  width: 0px;
+  height: 0px;
+  border-radius: 5px;
+  position: absolute;
+  left: 305px;
+  top: 185px;
+}
+body {
+  color: #ffffff;
+  background-color: #330088;
+}
+div {
+  z-index: 1;
+}
+#cannon {
+  background-color: #818181;
+  width: 18px;
+  height: 100px;
+  position: absolute;
+  left: 300px;
+  top: 180px;
+  border: 2px solid #444444;
+  border-radius: 10px;
+}
+#target {
+  position: absolute;
+  left: 100px;
+  top: -10px;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #ffffff;
+  background-color: #ff0000;
+  border-radius: 50%;
+}
+#cannonHitbox {
+  width: 18px;
+  height: 18px;
+  position: absolute;
+  left: 300px;
+  top: 180px;
+  border: 2px solid transparent;
+  border-radius: 10px;
+}
   </style>
 </head>
 <body>
-  <div id='ball'></div>
-  <div id='border'></div>
-  <script>
-    const ball = document.getElementById('ball')
-    let g = 0.3
-    let gravity = g
-    let border = window.innerHeight/2
-    let y = 0
-    let vy = 0
-    function start() {
-      vy+=gravity;
-      y += vy;
-      ball.style.transform = 'translateY('+y+'px)';
-      if (y > border && gravity > 0) {
-        gravity = -g;
-      } else if (y < border && gravity < 0) {
-        gravity = g;
-      }
-      requestAnimationFrame(start);
+<div style='position: absolute; left: 120px; top: 180px; font-size: 20px; color: yellow;'>This is the cannon -></div><!--For those who wonder: I didn't do style for that in CSS only because i couldn't create good ID for this-->
+<div id='ball'></div>
+<div id='cannon'></div>
+<div id='target'></div>
+<div id='earth'></div>
+<div id='settings'>
+  <input type='number' id='speed' placeholder='Enter the velocity (km/s)'>
+  <input type='number' id='angle' placeholder='Enter the angle (degrees)'>
+  <button onclick='run()'>Fire</button>
+  <p>The planet's all parameters are same as Earths. 1 pixel is equal to 58 kilometers. 2 in-game minutes = 1 real life second</p>
+  <p id='att'>Attempts: 0</p>
+</div>
+<div id='cannonHitbox'></div>
+<script>
+for (let i = 0; i < 100; i++) {
+  let star = document.createElement('div');
+  star.textContent = '.';
+  star.style.position = 'fixed';
+  star.style.left = Math.floor(Math.random() * (window.innerWidth - 5)) + 'px';
+  star.style.top = Math.floor(Math.random() * (window.innerHeight - 5)) + 'px';
+  star.style.zIndex = 0;
+  document.body.appendChild(star);
+}
+document.getElementById('cannonHitbox').style.left = '300px'
+document.getElementById('cannonHitbox').style.top = '180px'
+let attempt = 0
+const dt = 2
+const g = 6.67e-11
+const target = document.getElementById('target')
+const ball = document.getElementById('ball')
+const earth = document.getElementById('earth')
+const m1 = 10
+const m2 = 5.972e24
+let xBall = 310*58000
+let yBall = 190*58000
+const xEarth = 310*58000
+const yEarth = 310*58000
+let vx = 0
+let vy = 0
+let running = false;
+let animationId;
+function placeTarget() {
+  let x = Math.random() * (window.innerWidth - 10);
+  let y = Math.random() * (window.innerHeight - 10);
+  let rTE = Math.hypot(x - 310, y - 310);
+  if (rTE <= 120) {
+    requestAnimationFrame(placeTarget);
+  } else {
+    target.style.left = x + 'px';
+    target.style.top = y + 'px';
+    let dxT = (x + 10) - 310;
+    let dyT = (y + 10) - 190;
+    let rT = Math.hypot(dxT, dyT);
+    if (rT <= 15) {
+      localStorage.setItem('atoms', true);
+      alert('Achievement achieved!');
     }
-    start()
-  </script>
+  }
+}
+placeTarget()
+function run() {
+  running = false;
+  if (animationId) {
+    cancelAnimationFrame(animationId);
+  }
+  running = true;
+  attempt++;
+  vx = 0;
+  vy = 0;
+  xBall = 310*58000;
+  yBall = 190*58000;
+  ball.style.left = '305px';
+  ball.style.top = '185px';
+  let v = Number(document.getElementById('speed').value);
+  let angle = Number(document.getElementById('angle').value);
+  let rad = angle * Math.PI / 180;
+  vx = Math.cos(rad) * v * 1000;
+  vy = -Math.sin(rad) * v * 1000;
+  document.getElementById('att').textContent = 'Attempts: ' + attempt;
+  start();
+}
+function start() {
+  if (running) {
+    let dx = xBall - xEarth;
+    let dy = yBall - yEarth;
+    let r = Math.hypot(dx, dy);
+    let f = g * m1 * m2 / (r * r);
+    vx -= f / m1 * dx / r * dt;
+    vy -= f / m1 * dy / r * dt;
+    xBall += vx * dt;
+    yBall += vy * dt;
+    ball.style.left = xBall/58000+'px';
+    ball.style.top = yBall/58000+'px';
+    let dxT = (parseFloat(target.style.left) + 10) - (parseFloat(ball.style.left) + 5);
+    let dyT = (parseFloat(target.style.top) + 10) - (parseFloat(ball.style.top) + 5);
+    let rT = Math.hypot(dxT, dyT);
+    if (rT <= 15) {
+      running = false;
+      alert('Attempts: ' + attempt);
+      if (attempt === 1) {
+        localStorage.setItem('1st-try', 'true');
+        alert('Achievement achieved!');
+      }
+    }
+    setTimeout(() => {
+      let dxC = (parseFloat(document.getElementById('cannonHitbox').style.left) + 10) - (parseFloat(ball.style.left) + 5);
+      let dyC = (parseFloat(document.getElementById('cannonHitbox').style.top) + 10) - (parseFloat(ball.style.top) + 5);
+      let rC = Math.hypot(dxC, dyC);
+      if (rC <= 15 && localStorage.getItem('destruction') === null) {
+        localStorage.setItem('destruction', 'true');
+        alert('Achievement achieved!');
+      }
+    }, 5000);
+    if (r/58000 <= 115) {
+      running = false;
+      vx = 0;
+      vy = 0;
+      xBall = 310*58000;
+      yBall = 190*58000;
+      ball.style.left = '305px';
+      ball.style.top = '185px';
+    }
+    animationId = requestAnimationFrame(start);
+  }
+}
+</script>
 </body>
 </html>
