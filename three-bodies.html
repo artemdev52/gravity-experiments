@@ -286,6 +286,15 @@ function submitVariables() {
   for (let trail of trails) {
     trail.remove();
   }
+  dxGY = yellowPar.x - greenPar.x;
+  dyGY = yellowPar.y - greenPar.y;
+  rGY = Math.hypot(dxGY, dyGY);
+  dxYR = redPar.x - yellowPar.x;
+  dyYR = redPar.y - yellowPar.y;
+  rYR = Math.hypot(dxYR, dyYR);
+  dxRG = greenPar.x - redPar.x;
+  dyRG = greenPar.y - redPar.y;
+  rRG = Math.hypot(dxRG, dyRG);
   run();
 }
 function showSettings() {
