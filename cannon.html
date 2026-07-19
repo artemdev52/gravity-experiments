@@ -124,14 +124,16 @@ function placeTarget() {
 }
 placeTarget()
 function run() {
+  if (Number(document.getElementById('speed').value) >= 299792.458) {
+    alert('Please, do not breake the laws of the universe. Try something smaller than the speed of light.');
+    return;
+  }
   running = false;
   if (animationId) {
     cancelAnimationFrame(animationId);
   }
   running = true;
   attempt++;
-  vx = 0;
-  vy = 0;
   xBall = 310*58000;
   yBall = 190*58000;
   ball.style.left = '305px';
