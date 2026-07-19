@@ -77,8 +77,6 @@ div {
 </div>
 <div id='cannonHitbox'></div>
 <script>
-console.log(ball.getBoundingClientRect().width);
-console.log(ball.getBoundingClientRect().height);
 for (let i = 0; i < 100; i++) {
   let star = document.createElement('div');
   star.textContent = '.';
@@ -90,6 +88,8 @@ for (let i = 0; i < 100; i++) {
 }
 document.getElementById('cannonHitbox').style.left = '300px'
 document.getElementById('cannonHitbox').style.top = '180px'
+console.log(ball.getBoundingClientRect().width);
+console.log(ball.getBoundingClientRect().height);
 let attempt = 0
 let dt = 2
 const g = 6.67e-11
