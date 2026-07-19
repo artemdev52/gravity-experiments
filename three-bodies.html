@@ -252,6 +252,14 @@ function run() {
   }, 10000);
   center.style.left = (greenPar.mass * greenPar.x + yellowPar.mass * yellowPar.x + redPar.mass * redPar.x) / (greenPar.mass + yellowPar.mass + redPar.mass) + 'px';
   center.style.top = (greenPar.mass * greenPar.y + yellowPar.mass * yellowPar.y + redPar.mass * redPar.y) / (greenPar.mass + yellowPar.mass + redPar.mass) + 'px';
+  let E =
+    0.5 * m1 * (vx1*vx1 + vy1*vy1) +
+    0.5 * m2 * (vx2*vx2 + vy2*vy2) +
+    0.5 * m3 * (vx3*vx3 + vy3*vy3) -
+    G * m1 * m2 / r12 -
+    G * m1 * m3 / r13 -
+    G * m2 * m3 / r23;
+  console.log(E);
   if (running) {
     requestAnimationFrame(run);
   }
