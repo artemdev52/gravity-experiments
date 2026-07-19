@@ -14,9 +14,10 @@
   background-color: #0aff0a;
 }
 #ball {
-  border: 5px solid #ffe600;
-  width: 0px;
-  height: 0px;
+  border: 1px solid #ffe600;
+  width: 8px;
+  height: 8px;
+  background-color: #fff644;
   border-radius: 5px;
   position: absolute;
   left: 305px;
@@ -61,7 +62,8 @@ div {
   </style>
 </head>
 <body>
-<div style='position: absolute; left: 120px; top: 180px; font-size: 20px; color: yellow;'>This is the cannon -></div><!--For those who wonder: I didn't do style for that in CSS only because i couldn't create good ID for this-->
+<div style='position: absolute; left: 120px; top: 180px; font-size: 20px; color: yellow;'>This is the cannon -></div>
+<!--For those who wonder: I didn't do style for that in CSS only because i couldn't create good ID-->
 <div id='ball'></div>
 <div id='cannon'></div>
 <div id='target'></div>
@@ -75,6 +77,8 @@ div {
 </div>
 <div id='cannonHitbox'></div>
 <script>
+console.log(ball.getBoundingClientRect().width);
+console.log(ball.getBoundingClientRect().height);
 for (let i = 0; i < 100; i++) {
   let star = document.createElement('div');
   star.textContent = '.';
