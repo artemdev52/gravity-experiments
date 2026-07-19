@@ -89,7 +89,6 @@ for (let i = 0; i < 100; i++) {
 document.getElementById('cannonHitbox').style.left = '300px'
 document.getElementById('cannonHitbox').style.top = '180px'
 let attempt = 0
-let minDistance = Infinity
 let dt = 2
 const g = 6.67e-11
 const target = document.getElementById('target')
@@ -169,16 +168,14 @@ function start() {
       }
     }
     setTimeout(() => {
-      let dxC = (parseFloat(document.getElementById('cannonHitbox').style.left) + 10) - (parseFloat(ball.style.left) + 5);
-      let dyC = (parseFloat(document.getElementById('cannonHitbox').style.top) + 10) - (parseFloat(ball.style.top) + 5);
-      let rC = Math.hypot(dxC, dyC);
-      if (rC < minDistance) {
-        minDistance = rC;
-        console.log(minDistance);
-      }
-      if (rC <= 15 && localStorage.getItem('destruction') === null) {
-        localStorage.setItem('destruction', 'true');
-        alert('Achievement achieved!');
+      if (running) {
+        let dxC = (parseFloat(document.getElementById('cannonHitbox').style.left) + 10) - (parseFloat(ball.style.left) + 5);
+        let dyC = (parseFloat(document.getElementById('cannonHitbox').style.top) + 10) - (parseFloat(ball.style.top) + 5);
+        let rC = Math.hypot(dxC, dyC);
+        if (rC <= 15 && localStorage.getItem('destruction') === null) {
+          localStorage.setItem('destruction', 'true');
+          alert('Achievement achieved!');
+        }
       }
     }, 5000);
     if (r/58000 <= 115) {
