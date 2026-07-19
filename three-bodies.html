@@ -256,9 +256,9 @@ function run() {
     0.5 * greenPar.mass * (greenPar.vx**2 + greenPar.vy**2) +
     0.5 * yellowPar.mass * (yellowPar.vx**2 + yellowPar.vy**2) +
     0.5 * redPar.mass * (redPar.vx**2 + redPar.vy**2) -
-    G * greenPar.mass * yellowPar.mass / rGY -
-    G * greenPar.mass * redPar.mass / rYR -
-    G * yellowPar.mass * redPar.mass / rRG;
+    g * greenPar.mass * yellowPar.mass / rGY -
+    g * greenPar.mass * redPar.mass / rYR -
+    g * yellowPar.mass * redPar.mass / rRG;
   console.log(E);
   if (running) {
     requestAnimationFrame(run);
